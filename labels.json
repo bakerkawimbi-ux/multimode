@@ -1,0 +1,719 @@
+{
+  "version": 1,
+  "uncertain_outcome": "UNCERTAIN",
+  "note": "Two axes. Scene = what the media shows (image text prompts, plus audio_prompts for CLAP). Mood = the feeling. Reference titles are public-domain poems. Anchors are words the generated poem should echo; used by a deterministic grounding check.",
+  "axes": {
+    "scene": {
+      "unknown_id": "other/unknown",
+      "blocked_ids": [
+        "blocked/unsafe_content"
+      ],
+      "uses_audio": true,
+      "labels": [
+        {
+          "id": "nature/forest",
+          "display_name": "Forest",
+          "family": "nature",
+          "prompts": [
+            "a photo of a forest with tall trees",
+            "a path through dense woods with sunlight between the trunks",
+            "green woodland with moss and leaves"
+          ],
+          "anchors": [
+            "tree",
+            "trees",
+            "forest",
+            "woods",
+            "leaves",
+            "branches",
+            "moss",
+            "canopy",
+            "trunk",
+            "bough"
+          ],
+          "reference_title": "Trees (Joyce Kilmer)",
+          "audio_prompts": [
+            "birds singing and leaves rustling in a forest",
+            "wind moving through trees"
+          ]
+        },
+        {
+          "id": "nature/mountains",
+          "display_name": "Mountains",
+          "family": "nature",
+          "prompts": [
+            "a photo of mountain peaks and a valley",
+            "snow-capped mountains under a wide sky",
+            "rocky cliffs and a high ridge"
+          ],
+          "anchors": [
+            "mountain",
+            "mountains",
+            "peak",
+            "peaks",
+            "ridge",
+            "summit",
+            "cliff",
+            "valley",
+            "crag",
+            "slope"
+          ],
+          "reference_title": "Mont Blanc (Percy Bysshe Shelley)",
+          "audio_prompts": [
+            "strong wind in an open high place",
+            "distant echo and mountain wind"
+          ]
+        },
+        {
+          "id": "nature/flowers_garden",
+          "display_name": "Flowers and gardens",
+          "family": "nature",
+          "prompts": [
+            "a photo of flowers blooming in a garden",
+            "a close-up of petals and blossoms",
+            "a meadow full of wildflowers"
+          ],
+          "anchors": [
+            "flower",
+            "flowers",
+            "petal",
+            "petals",
+            "bloom",
+            "blossom",
+            "garden",
+            "meadow",
+            "bud",
+            "fragrance"
+          ],
+          "reference_title": "I Wandered Lonely as a Cloud (William Wordsworth)",
+          "audio_prompts": [
+            "bees buzzing and birdsong in a garden",
+            "a gentle breeze in a meadow"
+          ]
+        },
+        {
+          "id": "water/ocean_shore",
+          "display_name": "Ocean and shore",
+          "family": "water",
+          "prompts": [
+            "a photo of ocean waves on a beach",
+            "a sandy shore at the edge of the sea",
+            "a rocky coast with breaking surf"
+          ],
+          "anchors": [
+            "sea",
+            "ocean",
+            "wave",
+            "waves",
+            "shore",
+            "tide",
+            "surf",
+            "sand",
+            "foam",
+            "salt",
+            "beach"
+          ],
+          "reference_title": "Sea Fever (John Masefield)",
+          "audio_prompts": [
+            "ocean waves crashing on a shore",
+            "seagulls and surf"
+          ]
+        },
+        {
+          "id": "water/river_lake",
+          "display_name": "River and lake",
+          "family": "water",
+          "prompts": [
+            "a photo of a calm lake with reflections",
+            "a river flowing through the countryside",
+            "still water mirroring trees and sky"
+          ],
+          "anchors": [
+            "river",
+            "lake",
+            "stream",
+            "water",
+            "ripple",
+            "ripples",
+            "reflection",
+            "current",
+            "bank",
+            "mirror"
+          ],
+          "reference_title": "The Lake Isle of Innisfree (W. B. Yeats)",
+          "audio_prompts": [
+            "water flowing in a stream",
+            "gentle lapping of lake water"
+          ]
+        },
+        {
+          "id": "sky/sunrise_sunset",
+          "display_name": "Sunrise and sunset",
+          "family": "sky",
+          "prompts": [
+            "a photo of the sun rising over the horizon",
+            "a golden sunset with a glowing sky",
+            "warm orange light at dawn or dusk"
+          ],
+          "anchors": [
+            "sun",
+            "sunrise",
+            "sunset",
+            "dawn",
+            "dusk",
+            "horizon",
+            "gold",
+            "golden",
+            "glow",
+            "amber",
+            "twilight"
+          ],
+          "reference_title": "Sonnet 33, Full many a glorious morning (William Shakespeare)",
+          "audio_prompts": [
+            "gentle morning birdsong",
+            "calm evening ambience with crickets"
+          ]
+        },
+        {
+          "id": "sky/night_stars",
+          "display_name": "Night sky and stars",
+          "family": "sky",
+          "prompts": [
+            "a photo of a night sky full of stars",
+            "the moon over a dark landscape",
+            "the milky way above silhouetted hills"
+          ],
+          "anchors": [
+            "star",
+            "stars",
+            "moon",
+            "night",
+            "midnight",
+            "sky",
+            "constellation",
+            "darkness",
+            "moonlight",
+            "galaxy"
+          ],
+          "reference_title": "The Starlight Night (Gerard Manley Hopkins)",
+          "audio_prompts": [
+            "crickets chirping at night",
+            "quiet night ambience"
+          ]
+        },
+        {
+          "id": "sky/storm_clouds",
+          "display_name": "Storm clouds",
+          "family": "sky",
+          "prompts": [
+            "a photo of dark storm clouds and lightning",
+            "a dramatic stormy sky over the land",
+            "heavy gray clouds before a storm"
+          ],
+          "anchors": [
+            "storm",
+            "thunder",
+            "lightning",
+            "cloud",
+            "clouds",
+            "gale",
+            "tempest",
+            "wind",
+            "dark",
+            "rumble"
+          ],
+          "reference_title": "Ode to the West Wind (Percy Bysshe Shelley)",
+          "audio_prompts": [
+            "thunder and heavy wind",
+            "a thunderstorm rumbling"
+          ]
+        },
+        {
+          "id": "weather/rain",
+          "display_name": "Rain",
+          "family": "weather",
+          "prompts": [
+            "a photo of rain falling on a street or window",
+            "raindrops on leaves and puddles",
+            "a wet landscape in the rain"
+          ],
+          "anchors": [
+            "rain",
+            "raindrop",
+            "raindrops",
+            "drizzle",
+            "puddle",
+            "puddles",
+            "wet",
+            "drops",
+            "downpour",
+            "umbrella"
+          ],
+          "reference_title": "The Rainy Day (Henry Wadsworth Longfellow)",
+          "audio_prompts": [
+            "rain falling on a roof",
+            "steady rain on leaves"
+          ]
+        },
+        {
+          "id": "weather/snow_winter",
+          "display_name": "Snow and winter",
+          "family": "weather",
+          "prompts": [
+            "a photo of a snowy landscape in winter",
+            "snow-covered trees and a frozen field",
+            "a winter scene with frost and ice"
+          ],
+          "anchors": [
+            "snow",
+            "winter",
+            "frost",
+            "ice",
+            "frozen",
+            "white",
+            "cold",
+            "flakes",
+            "drift",
+            "chill"
+          ],
+          "reference_title": "Stopping by Woods on a Snowy Evening (Robert Frost)",
+          "audio_prompts": [
+            "quiet winter wind",
+            "footsteps crunching in snow"
+          ]
+        },
+        {
+          "id": "season/autumn_leaves",
+          "display_name": "Autumn leaves",
+          "family": "season",
+          "prompts": [
+            "a photo of autumn leaves in red and orange",
+            "a park path covered in fallen leaves",
+            "trees in fall colors"
+          ],
+          "anchors": [
+            "autumn",
+            "fall",
+            "leaves",
+            "leaf",
+            "crimson",
+            "amber",
+            "rust",
+            "harvest",
+            "fallen",
+            "gold"
+          ],
+          "reference_title": "To Autumn (John Keats)",
+          "audio_prompts": [
+            "leaves rustling in the wind",
+            "footsteps on dry leaves"
+          ]
+        },
+        {
+          "id": "urban/city_street",
+          "display_name": "City street",
+          "family": "urban",
+          "prompts": [
+            "a photo of a busy city street",
+            "buildings and traffic in a downtown area",
+            "people walking on a sidewalk in a city"
+          ],
+          "anchors": [
+            "city",
+            "street",
+            "streets",
+            "traffic",
+            "pavement",
+            "sidewalk",
+            "crowd",
+            "buildings",
+            "windows",
+            "concrete"
+          ],
+          "reference_title": "Composed upon Westminster Bridge (William Wordsworth)",
+          "audio_prompts": [
+            "city traffic and car horns",
+            "crowd and street noise"
+          ]
+        },
+        {
+          "id": "urban/night_city_lights",
+          "display_name": "City lights at night",
+          "family": "urban",
+          "prompts": [
+            "a photo of a city at night with bright lights",
+            "neon signs and reflections on wet streets",
+            "skyscrapers glowing after dark"
+          ],
+          "anchors": [
+            "neon",
+            "lights",
+            "night",
+            "city",
+            "skyline",
+            "glow",
+            "streetlamp",
+            "skyscraper",
+            "lamp",
+            "midnight"
+          ],
+          "reference_title": "Preludes (T. S. Eliot)",
+          "audio_prompts": [
+            "distant traffic at night",
+            "a city nightlife hum"
+          ]
+        },
+        {
+          "id": "home/cozy_interior",
+          "display_name": "Cozy interior",
+          "family": "home",
+          "prompts": [
+            "a photo of a cozy room with warm light",
+            "a fireplace, blankets and a cup of tea",
+            "a quiet home interior with books and a window"
+          ],
+          "anchors": [
+            "room",
+            "fire",
+            "fireplace",
+            "warm",
+            "window",
+            "blanket",
+            "tea",
+            "book",
+            "books",
+            "hearth",
+            "candle",
+            "home"
+          ],
+          "reference_title": "The Winter Evening (William Cowper)",
+          "audio_prompts": [
+            "a crackling fireplace",
+            "a quiet room with a ticking clock"
+          ]
+        },
+        {
+          "id": "people/gathering_celebration",
+          "display_name": "Gathering and celebration",
+          "family": "people",
+          "prompts": [
+            "a photo of people celebrating together",
+            "a festival with a joyful crowd",
+            "friends or family gathered around a table"
+          ],
+          "anchors": [
+            "laughter",
+            "crowd",
+            "together",
+            "festival",
+            "dance",
+            "celebration",
+            "joy",
+            "gather",
+            "friends",
+            "song",
+            "feast"
+          ],
+          "reference_title": "I Hear America Singing (Walt Whitman)",
+          "audio_prompts": [
+            "a crowd cheering and talking",
+            "people laughing and applause"
+          ]
+        },
+        {
+          "id": "animals/wildlife_pets",
+          "display_name": "Wildlife and pets",
+          "family": "animals",
+          "prompts": [
+            "a photo of an animal in the wild",
+            "a pet dog or cat resting at home",
+            "birds perched on a branch"
+          ],
+          "anchors": [
+            "bird",
+            "birds",
+            "wing",
+            "wings",
+            "fur",
+            "paw",
+            "paws",
+            "feather",
+            "feathers",
+            "creature",
+            "eyes",
+            "tail"
+          ],
+          "reference_title": "The Tyger (William Blake)",
+          "audio_prompts": [
+            "animal calls",
+            "a dog barking or birds calling"
+          ]
+        },
+        {
+          "id": "journey/road_path",
+          "display_name": "Road and path",
+          "family": "journey",
+          "prompts": [
+            "a photo of a long road stretching ahead",
+            "a winding trail through open country",
+            "a railway or path disappearing in the distance"
+          ],
+          "anchors": [
+            "road",
+            "path",
+            "trail",
+            "journey",
+            "way",
+            "miles",
+            "horizon",
+            "footsteps",
+            "wander",
+            "bend",
+            "fork",
+            "travel"
+          ],
+          "reference_title": "The Road Not Taken (Robert Frost)",
+          "audio_prompts": [
+            "footsteps on a gravel path",
+            "a car driving on a road"
+          ]
+        },
+        {
+          "id": "other/unknown",
+          "display_name": "Unknown / out of scope",
+          "family": "other",
+          "prompts": [
+            "a screenshot of a phone or computer screen",
+            "a document, text page, or chart",
+            "a meme, cartoon, or abstract pattern",
+            "a blank, black, or heavily blurred image",
+            "a close-up of an indoor object with no clear scene"
+          ],
+          "anchors": [],
+          "reference_title": "n/a (screenshot, document, blank, or no clear scene)",
+          "audio_prompts": [
+            "silence",
+            "indistinct background noise",
+            "a person speaking"
+          ]
+        },
+        {
+          "id": "blocked/unsafe_content",
+          "display_name": "Blocked: unsafe content",
+          "family": "blocked",
+          "prompts": [
+            "an explicit or sexual image",
+            "graphic violence or gore",
+            "a photo showing a person being hurt"
+          ],
+          "anchors": [],
+          "reference_title": "n/a (generation refused)",
+          "audio_prompts": []
+        }
+      ]
+    },
+    "mood": {
+      "unknown_id": "other/unknown",
+      "blocked_ids": [],
+      "uses_audio": false,
+      "labels": [
+        {
+          "id": "mood/serene_calm",
+          "display_name": "Serene and calm",
+          "family": "mood",
+          "prompts": [
+            "a calm, peaceful and quiet scene",
+            "a still and gentle atmosphere",
+            "a tranquil moment of rest"
+          ],
+          "anchors": [
+            "calm",
+            "still",
+            "quiet",
+            "hush",
+            "gentle",
+            "peace",
+            "serene",
+            "soft",
+            "rest",
+            "stillness"
+          ],
+          "reference_title": "The Lake Isle of Innisfree (W. B. Yeats)"
+        },
+        {
+          "id": "mood/joyful_bright",
+          "display_name": "Joyful and bright",
+          "family": "mood",
+          "prompts": [
+            "a cheerful, bright and lively scene",
+            "a happy, sunny and playful moment",
+            "an atmosphere full of joy and color"
+          ],
+          "anchors": [
+            "joy",
+            "bright",
+            "laugh",
+            "laughter",
+            "sun",
+            "bloom",
+            "dance",
+            "glad",
+            "gleam",
+            "color"
+          ],
+          "reference_title": "Pied Beauty (Gerard Manley Hopkins)"
+        },
+        {
+          "id": "mood/melancholy_wistful",
+          "display_name": "Melancholy and wistful",
+          "family": "mood",
+          "prompts": [
+            "a sad, wistful and lonely atmosphere",
+            "a gray, tender and sorrowful mood",
+            "a sense of longing and loss"
+          ],
+          "anchors": [
+            "sorrow",
+            "ache",
+            "fade",
+            "gray",
+            "longing",
+            "lost",
+            "tears",
+            "faded",
+            "grief",
+            "wistful"
+          ],
+          "reference_title": "Dover Beach (Matthew Arnold)"
+        },
+        {
+          "id": "mood/dramatic_intense",
+          "display_name": "Dramatic and intense",
+          "family": "mood",
+          "prompts": [
+            "a dramatic, powerful and intense scene",
+            "a wild and overwhelming force of nature",
+            "high contrast and strong energy"
+          ],
+          "anchors": [
+            "storm",
+            "fierce",
+            "thunder",
+            "roar",
+            "blaze",
+            "surge",
+            "wild",
+            "crash",
+            "fury",
+            "power"
+          ],
+          "reference_title": "Kubla Khan (Samuel Taylor Coleridge)"
+        },
+        {
+          "id": "mood/nostalgic_warm",
+          "display_name": "Nostalgic and warm",
+          "family": "mood",
+          "prompts": [
+            "a warm, nostalgic and sentimental scene",
+            "a memory of the past in golden light",
+            "a familiar place that feels like home"
+          ],
+          "anchors": [
+            "memory",
+            "remember",
+            "once",
+            "golden",
+            "old",
+            "home",
+            "years",
+            "warm",
+            "yesterday",
+            "childhood"
+          ],
+          "reference_title": "Tintern Abbey (William Wordsworth)"
+        },
+        {
+          "id": "mood/lonely_quiet",
+          "display_name": "Lonely and quiet",
+          "family": "mood",
+          "prompts": [
+            "a solitary, empty and silent place",
+            "one lone figure or object in a vast space",
+            "an isolated and still scene"
+          ],
+          "anchors": [
+            "alone",
+            "lonely",
+            "solitude",
+            "empty",
+            "silence",
+            "single",
+            "lone",
+            "solitary",
+            "distance",
+            "vast"
+          ],
+          "reference_title": "Alone (Edgar Allan Poe)"
+        },
+        {
+          "id": "mood/hopeful_renewal",
+          "display_name": "Hopeful and renewing",
+          "family": "mood",
+          "prompts": [
+            "a hopeful scene of new beginnings",
+            "light breaking through after darkness",
+            "spring growth and fresh starts"
+          ],
+          "anchors": [
+            "hope",
+            "dawn",
+            "begin",
+            "new",
+            "rise",
+            "bloom",
+            "light",
+            "spring",
+            "renew",
+            "morning"
+          ],
+          "reference_title": "\"Hope\" is the thing with feathers (Emily Dickinson)"
+        },
+        {
+          "id": "mood/mysterious_eerie",
+          "display_name": "Mysterious and eerie",
+          "family": "mood",
+          "prompts": [
+            "a mysterious, foggy and eerie scene",
+            "a dark, strange and unsettling atmosphere",
+            "shadows and mist hiding something unknown"
+          ],
+          "anchors": [
+            "mist",
+            "fog",
+            "shadow",
+            "shadows",
+            "whisper",
+            "strange",
+            "hidden",
+            "dark",
+            "veil",
+            "haze"
+          ],
+          "reference_title": "The Raven (Edgar Allan Poe)"
+        },
+        {
+          "id": "other/unknown",
+          "display_name": "Unknown / neutral",
+          "family": "other",
+          "prompts": [
+            "a flat, neutral image with no particular mood",
+            "a document or screenshot",
+            "a blank or meaningless image"
+          ],
+          "anchors": [],
+          "reference_title": "n/a (no clear mood)"
+        }
+      ]
+    }
+  }
+}

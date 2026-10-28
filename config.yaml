@@ -1,0 +1,267 @@
+# Every tunable value lives here. Secrets do NOT: only the *names* of env vars appear.
+# Validate with:  python -m core.config
+#
+# model_verified_on: set to YYYY-MM-DD after you confirm the model id exists
+# (Hugging Face page or provider console). null => validator warns.
+
+project:
+  name: poem-writer
+  language: en
+  version: "0.1.0"
+
+paths:
+  labels: data/labels.json
+  cache_dir: .cache
+  upload_dir: .uploads
+  eval_results: eval/results
+  golden_set: eval/golden
+  log_dir: logs
+
+limits:
+  max_image_mb: 15
+  max_video_mb: 50
+  max_document_mb: 10
+  max_video_seconds: 30
+  max_user_note_chars: 500        # the optional text instruction (tone, form, subject hint)
+  max_document_chars: 4000        # optional context document, truncated after extraction
+  allowed_extensions:
+    image: [".png", ".jpg", ".jpeg", ".webp"]
+    video: [".mp4", ".mov", ".webm", ".mkv"]
+    document: [".pdf", ".docx", ".txt", ".md"]
+
+media_prep:
+  image:
+    downscale_max_side: 1024
+    min_side: 128
+    blur_laplacian_min: 60.0       # variance of Laplacian below this => "blurry"
+    dark_mean_luma_min: 40.0       # mean luma (0-255) below this => "dark"
+  video:
+    sample_frames: 8
+    shaky_flow_max: 12.0           # mean optical-flow magnitude (px) above this => "shaky"
+    dark_mean_luma_min: 40.0
+    extract_audio: true
+    segment_change_threshold: 0.25 # cosine distance between neighbouring frame embeddings => new segment
+    pooling: mean                  # mean | max
+  audio:
+    sample_rate: 48000
+    max_seconds: 30
+    silence_rms_min: 0.005         # below this => "silent", audio source dropped
+    noisy_snr_below_db: 10.0       # below this => "noisy"
+  document:
+    min_chars: 20
+
+theme_scoring:
+  top_k: 3
+  softmax_temperature: 0.01        # CLIP-style logit scale of 100
+
+open_set:
+  scene:
+    reject_below: 0.30             # best real label below this => other/unknown wins
+    margin_min: 0.05
+  mood:
+    reject_below: 0.25             # mood is fuzzier, so a lower bar
+    margin_min: 0.03
+
+fusion:                            # applied separately on the scene axis and the mood axis
+  min_confidence: 0.35
+  uncertain_below: 0.30
+  weights:                         # normalised over the sources actually present
+    image: 0.45
+    video: 0.40
+    audio: 0.15                    # audio track of a video; contributes to the scene axis only
+  agreement_bonus:
+    MATCH: 0.15
+    PARTIAL: 0.05
+    CONFLICT: 0.0
+    SINGLE_MODALITY: 0.0
+    UNCERTAIN: 0.0
+  rank_scores: [0.6, 0.25, 0.15]   # fixed rank scores for backends without probabilities (vision LLM)
+  secondary_min: 0.20              # extra scenes shown to the poet only above this fused support
+
+poem:
+  default_form: free_verse
+  seed: 1234                       # part of the cache key; same facts + seed + model => same cached poem
+  max_attempts: 2                  # regenerate at most this many times if verification fails
+  forms:
+    free_verse: {min_lines: 4, max_lines: 16}
+    haiku: {min_lines: 3, max_lines: 3, syllable_pattern: [5, 7, 5], syllable_tolerance: 1}
+    rhymed_quatrains: {min_lines: 4, max_lines: 12, lines_multiple_of: 4}
+    sonnet: {min_lines: 14, max_lines: 14}
+  checks:
+    anchor_min_hits: 1             # poem must echo this many anchor words of the fused scene label
+    max_copied_ngram: 7            # reject if 8+ consecutive words are copied from the context document or reference corpus
+  ai_label: "AI-generated poem"
+
+safety:
+  refuse_real_person_naming: true  # the system never identifies people in media
+  blocked_request_patterns:        # case-insensitive regexes applied to the user note
+    - '\bwho is (this|that|she|he|they)\b'
+    - '\bidentify (the |this |that )?(person|people|man|woman|face|faces)\b'
+    - '\b(sexual|explicit|nsfw)\b'
+    - '\b(self[- ]harm|suicide method)\b'
+
+targets:                           # evaluation compares measured numbers to these; they are goals, not results
+  scene_top1_zero_shot: 0.70
+  scene_top1_probe: 0.85
+  video_scene_top1: 0.75
+  audio_ambience_top1: 0.60
+  mood_top1_probe: 0.55
+  unknown_rejection: 0.85
+  hallucination_max: 0.10
+  mismatch_conflict: 0.90
+  form_compliance: 1.0
+  anchor_grounded_rate: 0.95
+  clip_pair_win_rate: 0.85
+  blocked_prompt_refusal: 1.0
+  human_relevance_mean: 3.8
+  human_quality_mean: 3.5
+  p95_latency_image_s: 20
+  p95_latency_video_s: 45
+  p95_cache_hit_s: 1
+
+cache:
+  enabled: true
+  ttl_days: 30
+  store_inputs: false              # never keep uploaded images, videos or documents
+
+retry:
+  max_retries: 2
+  base_delay_s: 0.5
+  max_delay_s: 8.0
+  jitter: true                     # 5xx only; a 429 falls through to the next provider
+
+providers:
+  local_parsers:
+    type: local_parser             # pypdf, python-docx, plain text
+    timeout_s: 30
+  passthrough:
+    type: passthrough
+    timeout_s: 1
+  colab_image:
+    type: custom_http
+    model: openai/clip-vit-large-patch14
+    model_verified_on: null
+    env_key: COLAB_TOKEN
+    base_url_env: COLAB_SERVER_URL
+    timeout_s: 30
+    cooldown_s: 120
+    options: {endpoint: /classify/image}
+  local_clip:
+    type: local_clip               # also used for video frames
+    model: openai/clip-vit-large-patch14
+    model_verified_on: null
+    timeout_s: 90
+  vision_llm_gemini:
+    type: vision_llm               # rank-based scores only; image pixels leave your machine
+    model: gemini-2.5-flash
+    model_verified_on: null
+    env_key: GEMINI_API_KEY
+    timeout_s: 40
+    cooldown_s: 60
+    rpm: 5
+    daily_soft_limit: 100
+  colab_video:
+    type: custom_http
+    model: openai/clip-vit-large-patch14
+    model_verified_on: null
+    env_key: COLAB_TOKEN
+    base_url_env: COLAB_SERVER_URL
+    timeout_s: 90
+    cooldown_s: 120
+    options: {endpoint: /classify/video}
+  colab_audio:
+    type: custom_http
+    model: laion/larger_clap_general
+    model_verified_on: null
+    env_key: COLAB_TOKEN
+    base_url_env: COLAB_SERVER_URL
+    timeout_s: 60
+    cooldown_s: 120
+    options: {endpoint: /classify/audio}
+  local_clap:
+    type: local_clap
+    model: laion/larger_clap_general
+    model_verified_on: null
+    timeout_s: 90
+  gemini_poet:
+    type: llm_gen
+    tier: free_hosted
+    model: gemini-2.5-flash
+    model_verified_on: null
+    env_key: GEMINI_API_KEY
+    timeout_s: 40
+    cooldown_s: 60
+    rpm: 5
+    daily_soft_limit: 100
+    options: {temperature: 0.8, max_output_tokens: 400}
+  groq_poet:
+    type: llm_gen
+    tier: free_hosted
+    model: llama-3.3-70b-versatile
+    model_verified_on: null
+    env_key: GROQ_API_KEY
+    timeout_s: 30
+    cooldown_s: 60
+    rpm: 10
+    daily_soft_limit: 200
+    options: {temperature: 0.8, max_output_tokens: 400}
+  openrouter_poet:
+    type: llm_gen
+    tier: free_hosted
+    model: meta-llama/llama-3.3-70b-instruct:free
+    model_verified_on: null
+    env_key: OPENROUTER_API_KEY
+    timeout_s: 40
+    cooldown_s: 300
+    rpm: 5
+    daily_soft_limit: 40           # free models are capped at 50 requests/day without credits
+    options: {temperature: 0.8, max_output_tokens: 400}
+  colab_poet:
+    type: custom_http
+    tier: self_hosted              # open-weight model you run yourself: no provider cap
+    model: Qwen/Qwen2.5-1.5B-Instruct
+    model_verified_on: null
+    env_key: COLAB_TOKEN
+    base_url_env: COLAB_SERVER_URL
+    timeout_s: 120
+    cooldown_s: 120
+    options: {endpoint: /generate/text}
+  anthropic_paid:
+    type: llm_gen
+    tier: paid
+    enabled: false                 # paid use is opt-in; set true only if you accept the cost
+    model: claude-haiku-5-5
+    model_verified_on: null
+    env_key: ANTHROPIC_API_KEY
+    timeout_s: 40
+    cooldown_s: 60
+    rpm: 30
+    daily_soft_limit: 500
+    options: {temperature: 0.8, max_output_tokens: 400}
+
+agents:
+  image:
+    providers: [colab_image, local_clip, vision_llm_gemini]
+  video:
+    providers: [colab_video, local_clip]
+  audio:
+    providers: [colab_audio, local_clap]
+  document:
+    providers: [local_parsers]
+  text:
+    providers: [passthrough]
+
+generators:                        # free hosted -> self-hosted -> optional paid
+  providers: [gemini_poet, groq_poet, openrouter_poet, colab_poet, anthropic_paid]
+  on_all_fail: unavailable         # returns a "generation unavailable" result, never an exception
+
+api:
+  host: 127.0.0.1
+  port: 8000
+  cors_origins: ["http://localhost:3000"]
+  mock_mode: false
+
+privacy:
+  hosted_llm_notice: true          # UI warns: free tiers may use prompts for training
+  send_context_to_hosted_llm: false  # false => the document/note is only sent to self-hosted generators
+  allow_hosted_vision: false       # false => vision_llm_gemini is skipped; pixels stay on your machine/Colab
